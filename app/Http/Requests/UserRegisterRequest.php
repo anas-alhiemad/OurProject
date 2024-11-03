@@ -23,8 +23,10 @@ class UserRegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string|between:2,100',
+            'userName' => 'required|string|between:2,100',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

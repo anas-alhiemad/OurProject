@@ -26,6 +26,7 @@ class UserRegsiterService
             $user = $this ->model->create(array_merge(
                 $userdata->validated(),
                 ['password' => bcrypt($request->password),
+                 'photo' => $request->file('photo')->store('userPhotos')
                 ]
             ));
             return $user ->email;
