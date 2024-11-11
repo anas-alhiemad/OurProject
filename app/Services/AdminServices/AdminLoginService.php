@@ -3,6 +3,8 @@
 namespace App\Services\AdminServices;
 use Validator;
 use App\Models\Admin;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 class AdminLoginService 
 {
     protected $model;
@@ -43,6 +45,9 @@ class AdminLoginService
     {
         $userdata = $this->validation($request);
         $usertoken = $this->IsValidData($userdata);
+        if ($usertoken instanceof JsonResponse && $usertoken->getStatusCode() === 422) {
+            return response()->json(['email' => 'The selected email is invalid.'], 401);
+        }
         $data = $this->createNewToken($usertoken);
         return $data;
     }

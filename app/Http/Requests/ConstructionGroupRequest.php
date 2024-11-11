@@ -23,7 +23,7 @@ class ConstructionGroupRequest extends FormRequest
     {
         return [
          "nameGroup"=>"required|string|min:4",
-         "description"=>"required|string"
+         "description"=>"sometimes|string"
         ];
     }
 }

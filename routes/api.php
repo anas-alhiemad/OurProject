@@ -55,6 +55,7 @@ Route::group([
     'prefix' => 'user/group'
     ],function(){
     Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user');
+    Route::post('/updateGroup', [GroupsController::class, 'updateGroup'])->middleware('auth:user');
     });    
 
 
