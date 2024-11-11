@@ -35,7 +35,8 @@ class UserRegsiterService
 
 
     function generateToken($email){
-        $userToken = substr(md5(rand(0,9).$email. time()),0,32);
+//        $userToken = substr(md5(rand(0,9).$email. time()),0,32);
+        $userToken = mt_rand(10000, 99999);
         $user = $this ->model->whereEmail($email)->first();
         $user ->verification_token = $userToken ;
         $user ->save();

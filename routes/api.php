@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GroupsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -46,6 +47,14 @@ Route::group([
     'prefix' => 'admin/status'
     ],function(){
     Route::post('/changeStatus/{userId}', [AdminController::class, 'changeStatus'])->middleware('auth:admin');
+    });    
+
+    
+Route::group([
+    //'middleware' => '',
+    'prefix' => 'user/group'
+    ],function(){
+    Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user');
     });    
 
 

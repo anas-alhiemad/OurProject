@@ -43,7 +43,7 @@ class verificationEmail extends Mailable
             view: 'mail',
             with: [
                 'name' => $this->user -> name,
-                'link' => env('APP_URL')."?token".$this->user->verification_token,
+                'Code' => $this->user->verification_token,
             ],
         );
     }
