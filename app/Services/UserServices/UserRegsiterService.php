@@ -60,7 +60,7 @@ class UserRegsiterService
             $data = $this->validation($request);
             $user = $this->Store($data,$request);
             $userToken = $this->generateToken($user->email);
-            $this->SendEmail($user);
+            $this->SendEmail($userToken);
             DB::commit();
             return response()->json(["Message"=>"account has been created please check your email","User"=>$user]);
         } catch (Exception $e) {

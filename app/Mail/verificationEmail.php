@@ -22,6 +22,7 @@ class verificationEmail extends Mailable
     public function __construct($user)
     {
        $this -> user = $user;
+
     }
 
     /**
@@ -43,8 +44,10 @@ class verificationEmail extends Mailable
             view: 'mail',
             with: [
                 'name' => $this->user -> name,
-                'Code' => $this->user->verification_token,
+                'verification_token' => $this->user->verification_token
             ],
+        
+
         );
     }
 
