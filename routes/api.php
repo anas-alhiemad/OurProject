@@ -47,6 +47,7 @@ Route::group([
     'prefix' => 'admin/status'
     ],function(){
     Route::post('/changeStatus/{userId}', [AdminController::class, 'changeStatus'])->middleware('auth:admin');
+    Route::post('/showUserPending', [AdminController::class, 'showUserPending'])->middleware('auth:admin');
     });    
 
     
@@ -55,7 +56,7 @@ Route::group([
     'prefix' => 'user/group'
     ],function(){
     Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user');
-    Route::post('/updateGroup', [GroupsController::class, 'updateGroup'])->middleware('auth:user');
+    Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user');
     });    
 
 

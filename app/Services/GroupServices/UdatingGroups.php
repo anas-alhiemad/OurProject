@@ -13,20 +13,33 @@ class UdatingGroups{
 
 
         public function isOwner($id){
-            $worker = $this->model->whereId($id)->first();
+            $group = $this->model->whereId($id)->first();
+            $userId = auth()->guard('user')->id();
+
+            if ($group->created_by == $userId) { return true ;} 
+                                          else {return false;}
                 
             }
+
+
             
-        public function updateGroup($id, $data)
+        public function updateGroup($data,$id)
         {
-            $group = Group::findOrFail($id);
-            
+            $group = $this->model->whereId($id)->first();
             DB::beginTransaction();
 
             try {
-                $group->update($data);
+                $owner = $this->isOwner($id);
+                if ($owner) {
+                $group->update($data->validated()); 
                 DB::commit();
-                return $group;
+                return response()->json([
+                    "message" => "Group has been Updated successfuly "
+                ],200);}
+                else{
+                    return response()->json(['Message' => 'You do not have the authority to edit the group.'], 422);
+                }
+
             } catch (Exception $e) {
                 DB::rollBack();
                 throw new Exception("Error updating Group: " . $e->getMessage());

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Group;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ConstructionGroupRequest extends FormRequest
+class UpdatingGroupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class ConstructionGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-         "nameGroup"=>"required|string|min:4",
-         "description"=>"sometimes|string"
+            "nameGroup"=>"sometimes|string|min:4",
+            "description"=>"sometimes|string"
         ];
     }
 }
