@@ -57,8 +57,12 @@ Route::group([
     ],function(){
     Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user');
     Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user');
+    Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
     });    
 
+    // Route::middleware(['checkUserType:admin,user'])->group(function () {
+    //     Route::get('/showGroup', [GroupsController::class, 'showGroup']);
+    // });
 
     Route::get('/Unauthorized',function(){
         return response()->json(["Message" => "Unauthorized"], 401);

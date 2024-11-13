@@ -8,15 +8,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class GroupResource extends JsonResource
 {
-    protected $model;
-    function __construct(){
-        $this -> model = new Group();
-    }
+    protected $model = Group::class;
     
     public function toArray(Request $request): array
     {
         return [
-            'name'=> $this->name,
+            'name'=> $this->nameGroup,
             'description'=>$this->description
         ];
     }
