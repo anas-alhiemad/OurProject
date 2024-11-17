@@ -6,7 +6,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FileController;
-
+use App\Http\Controllers\GroupsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +19,7 @@ use App\Http\Controllers\FileController;
 |
 */
 
+// Routes for Admin Authentication
 Route::group([
     //'middleware' => '',
     'prefix' => 'auth/admin'
@@ -30,8 +31,7 @@ Route::group([
     Route::get('/userProfile', [AdminAuthController::class, 'userProfile']);
 });
 
-
-
+// Routes for User Authentication
 Route::group([
     //'middleware' => '',
     'prefix' => 'auth/user'
@@ -44,18 +44,26 @@ Route::group([
     Route::get('/verify/{token}', [UserAuthController::class, 'verify']);
 });
 
+// Routes for Admin-specific actions
 Route::group([
     //'middleware' => '',
     'prefix' => 'admin/status'
 ], function () {
     Route::post('/changeStatus/{userId}', [AdminController::class, 'changeStatus'])->middleware('auth:admin');
+    Route::post('/showUserPending', [AdminController::class, 'showUserPending'])->middleware('auth:admin');
 });
 
+// Routes for Groups
+Route::group([
+    //'middleware' => '',
+    'prefix' => 'user/group'
+], function () {
+    Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user');
+    Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user');
+    Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
+});
 
-Route::get('/Unauthorized', function () {
-    return response()->json(["Message" => "Unauthorized"], 401);
-})->name('login');
-//////////////////////////
+// Routes for Files
 Route::group([
     //'middleware' => '',
     'prefix' => 'files'
@@ -65,3 +73,8 @@ Route::group([
     Route::post('/update/{file}', [FileController::class, 'update']);
     Route::delete('/delete/{file}', [FileController::class, 'destroy']);
 });
+
+// Unauthorized Route
+Route::get('/Unauthorized', function () {
+    return response()->json(["Message" => "Unauthorized"], 401);
+})->name('login');
