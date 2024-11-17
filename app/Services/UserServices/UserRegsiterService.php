@@ -29,15 +29,14 @@ class UserRegsiterService
                  'photo' => $request->file('photo')->store('userPhotos')
                 ]
             ));
-            return $user;
+            return $user ->email;
         }
 
 
 
-    function generateToken($userEmail){
-//        $userToken = substr(md5(rand(0,9).$email. time()),0,32);
-        $userToken = mt_rand(10000, 99999);
-        $user = $this ->model->whereEmail($userEmail)->first();
+    function generateToken($email){
+        $userToken = substr(md5(rand(0,9).$email. time()),0,32);
+        $user = $this ->model->whereEmail($email)->first();
         $user ->verification_token = $userToken ;
         $user ->save();
         return $user;
@@ -58,11 +57,11 @@ class UserRegsiterService
         try {
             DB::beginTransaction();
             $data = $this->validation($request);
-            $user = $this->Store($data,$request);
-            $userToken = $this->generateToken($user->email);
-            $this->SendEmail($userToken);
+            $email = $this->Store($data,$request);
+            $user = $this->generateToken($email);
+            $this->SendEmail($user);
             DB::commit();
-            return response()->json(["Message"=>"account has been created please check your email","User"=>$user]);
+            return response()->json(["Message"=>"account has been created please check your email"]);
         } catch (Exception $e) {
             DB::rollBack();
             return $e->getMessage();
