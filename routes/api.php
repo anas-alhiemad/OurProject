@@ -57,6 +57,7 @@ Route::group([
     ],function(){
     Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user');
     Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user');
+    Route::post('/deleteGroup/{id}', [GroupsController::class, 'deleteGroup'])->middleware('auth:user');
     Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
     });    
 
