@@ -1,10 +1,13 @@
 <?php
 namespace App\Services\UserServices;
+use Exception;
+
+use App\Models\User;
+use App\Mail\verificationEmail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\verificationEmail;
-use App\Models\User;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+
 class UserRegsiterService 
 {
     protected $model;
@@ -29,14 +32,15 @@ class UserRegsiterService
                  'photo' => $request->file('photo')->store('userPhotos')
                 ]
             ));
-            return $user ->email;
+            return $user;
         }
 
 
 
-    function generateToken($email){
-        $userToken = substr(md5(rand(0,9).$email. time()),0,32);
-        $user = $this ->model->whereEmail($email)->first();
+    function generateToken($userEmail){
+//        $userToken = substr(md5(rand(0,9).$email. time()),0,32);
+        $userToken = mt_rand(10000, 99999);
+        $user = $this ->model->whereEmail($userEmail)->first();
         $user ->verification_token = $userToken ;
         $user ->save();
         return $user;
@@ -53,21 +57,14 @@ class UserRegsiterService
 
 
     function  register($request){
-
-        try {
-            DB::beginTransaction();
             $data = $this->validation($request);
-            $email = $this->Store($data,$request);
-            $user = $this->generateToken($email);
-            $this->SendEmail($user);
-            DB::commit();
-            return response()->json(["Message"=>"account has been created please check your email"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return $e->getMessage();
-        }
+            $user = $this->store($data,$request);
+        //    return throw new \Exception('Test error to trigger rollback');
+            $userToken = $this->generateToken($user->email);
+            $this->SendEmail($userToken);
+            return response()->json(["Message"=>"account has been created please check your email","User"=>$user]);
 
-} 
+    } 
 
 
 

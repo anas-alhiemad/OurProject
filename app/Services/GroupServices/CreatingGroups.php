@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Services\GroupServices;
-use Illuminate\Support\Facades\DB;
-use App\Models\Group;
+use Exception;
 use Validator;
+use App\Models\Group;
+use App\Models\UserGroup;
+use Illuminate\Support\Facades\DB;
+
 class CreatingGroups{
 
     protected $model;
@@ -11,22 +14,28 @@ class CreatingGroups{
         $this -> model = new Group();
     }
 
+    function relation($groupId)
+    {
+     $userId = auth()->guard('user')->id();
+     $userGroup = new UserGroup();
+     $userGroup->groupId = $groupId;
+     $userGroup->userId = $userId;
+     $userGroup->isOwner = true;
+     $userGroup->save();
+    }
+
     function create($request)
     {
-        try {
-            DB::beginTransaction();
             $data = $request->validated();
             $data['created_by'] = auth()->guard('user')->id();
             $group = Group::create($data);
+            $this->relation($group->id);
           //  $this->sendNotification();
-            DB::commit();
-            return response()->json([
-                "message" => "Group has been created successfuly "
+                 return response()->json([
+                "message" => "Group has been created successfuly ",
+                "group" => $group
             ],200);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return $e->getMessage();
-        }
+     
     }
  }
     
