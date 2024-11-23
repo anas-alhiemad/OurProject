@@ -1,6 +1,6 @@
 <?php
+namespace App\Services\FileServices;
 
-namespace App\Services\UserServices;
 
 use App\Models\File;
 use Validator;
@@ -14,7 +14,7 @@ class UserFileService
     {
         $validator = FacadesValidator::make($request->all(), [
             "name" => "required|max:25",
-            "file" => "required|file|mimes:jpeg,png,pdf|max:6144",
+            "file" => "required|file|mimes:docx,excel",
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
@@ -53,7 +53,7 @@ class UserFileService
     {
         $validator = FacadesValidator::make($request->all(), [
             "name" => "required|max:25",
-            "file" => "file|mimes:jpeg,png,pdf|max:6144",
+            "file" => "file|mimes:mimes:docx,excel",
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);

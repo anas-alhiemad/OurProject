@@ -2,10 +2,11 @@
 
 namespace App\Services\AdminServices;
 
-use App\Aspects\LoginAspect;
-use Validator;
 use App\Models\Admin;
-use Jenssegers\Agent\Facades\Agent;
+use App\Aspects\LoginAspect;
+use App\Aspects\LoggingAspect;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
 
 class AdminLoginService
 {
@@ -17,12 +18,6 @@ class AdminLoginService
 
     function validation($request)
     {
-
-        // $loggingAspect = new LoginAspect(Agent::getFacadeRoot());
-        // // $loggingAspect->around(function () use ($request) {
-        // //     // ...
-        // // });
-        // return $loggingAspect->around($request);
 
         $validator = Validator::make($request->all(),$request->rules());
         if ($validator->fails()){
@@ -46,26 +41,19 @@ class AdminLoginService
     {
         return response()->json([
             'access_token' => $token,
-            // 'token_type' => 'bearer',
-            // 'expires_in' => auth()->factory()->getTTL() * 60,
             'user' => auth()->user(),
         ]);
     }
 
     function Login($request)
     {
-        // $loggingAspect = new LoggingAspect(Agent::getFacadeRoot());
-        // // $loggingAspect->around(function () use ($request) {
-        // //     // ...
-        // // });
-        // return $loggingAspect->around(function () use ($request) {
-        //     // Original createUser method logic
-        //     // ...
-        //     return ['id' => 1, 'name' => $request['name'], 'email' => $request['email']];
-        // });
+        
         $userdata = $this->validation($request);
         $usertoken = $this->IsValidData($userdata);
+        if ($usertoken instanceof JsonResponse && $usertoken->getStatusCode() === 422) {
+            return response()->json(['email' => 'The selected email is invalid.'], 401);
+        }
         $data = $this->createNewToken($usertoken);
-        return $data;
-    }
+        return response()->json(["Message" => "User successfully signed in","data" => $data -> original]);
+     }
 }

@@ -57,4 +57,9 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims() {
         return [];
     }
+
+
+    public function userGroup(){
+        return $this->hasMany(UserGroup::class,'userId');
+    }
 }

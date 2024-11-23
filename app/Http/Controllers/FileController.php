@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
-use App\Services\UserServices\UserFileService;
+use App\Services\FileServices\UserFileService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;

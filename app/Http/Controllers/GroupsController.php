@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use Illuminate\Http\Request;
 use App\Http\Resources\GroupResource;
+use App\Services\GroupServices\DeleteGroups;
 use App\Services\GroupServices\UdatingGroups;
 use App\Services\GroupServices\CreatingGroups;
 use App\Http\Requests\Group\UpdatingGroupRequest;
@@ -27,5 +28,10 @@ class GroupsController extends Controller
     public function updateGroup(UpdatingGroupRequest $request,$id)
     {
         return (new UdatingGroups())->updateGroup($request,$id);
+    }
+
+    public function deleteGroup($id)
+    {
+        return (new DeleteGroups())->deleteGroup($id);
     }
 }
