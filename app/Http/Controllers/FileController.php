@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Files\CreateFileRequest;
+use App\Http\Requests\Files\UpdateFileRequest;
 use App\Models\File;
 use App\Services\FileServices\UserFileService;
 use Illuminate\Http\Request;
@@ -17,13 +19,13 @@ class FileController extends Controller
      */
     protected UserFileService $fileService;
 
-    // singleton pattern, service containerUserFileService
+    // singleton pattern, service container UserFileService
     public function __construct(UserFileService $fileService)
     {
         $this->fileService = $fileService;
     }
 
-    public function upload(Request $request)
+    public function upload(CreateFileRequest $request)
     {
         return $this->fileService->upload($request);
     }
@@ -33,7 +35,7 @@ class FileController extends Controller
         return $this->fileService->get();
     }
 
-    public function update(Request $request, File $file)
+    public function update(UpdateFileRequest $request, File $file)
     {
         return $this->fileService->update($request,  $file);
     }

@@ -1,24 +1,22 @@
 <?php
+
 namespace App\Services\FileServices;
 
-
+use App\Http\Requests\Files\CreateFileRequest;
+use App\Http\Requests\Files\UpdateFileRequest;
 use App\Models\File;
+use App\Services\BaseService;
 use Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 
-class UserFileService
+class UserFileService extends BaseService
 {
-    public function upload(Request $request)
+    public function upload(CreateFileRequest $request)
     {
-        $validator = FacadesValidator::make($request->all(), [
-            "name" => "required|max:25",
-            "file" => "required|file|mimes:docx,excel",
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
+        DB::beginTransaction();
 
         $file = $request->file('file');
         $fileName = $file->getClientOriginalName();
@@ -35,68 +33,54 @@ class UserFileService
         $newFile->name = $request->input('name');
         $newFile->file_path = '/uploads/' . $fileName;
         $newFile->save();
-        return response()->json(
-            [
-                'message' => 'File uploaded successfully.',
-                'data' => $newFile
-            ]
-        );
+        DB::commit();
+        return $this->customResponse('File uploaded successfully.',$newFile);
     }
 
     public function get()
     {
         $files = File::all();
-        return response()->json(['message' => $files]);
+        return $this->customResponse('Files list',$files);
     }
 
-    public function update(Request $request, File $file)
+    public function update(UpdateFileRequest $request, File $file)
     {
-        $validator = FacadesValidator::make($request->all(), [
-            "name" => "required|max:25",
-            "file" => "file|mimes:mimes:docx,excel",
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+        DB::beginTransaction();
+        try {
+            if ($request->file('file') != null) {
+                $fileUpload = $request->file('file');
+                $fileName = $fileUpload->getClientOriginalName();
+
+                $disk = Storage::build([
+                    'driver' => 'local',
+                    'root' =>   '/uploads',
+                ]);
+
+                $disk->put($fileName, file_get_contents($fileUpload->path()));
+
+                $file = File::find($file->id);
+                Storage::delete($file->file_path);
+                $file->name = $request->input('name');
+                $file->file_path = '/uploads/' . $fileName;
+            }
+            $file->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
         }
-        if ($request->file('file') != null) {
-            $fileUpload = $request->file('file');
-            $fileName = $fileUpload->getClientOriginalName();
 
-            $disk = Storage::build([
-                'driver' => 'local',
-                'root' =>   '/uploads',
-            ]);
-
-            $disk->put($fileName, file_get_contents($fileUpload->path()));
-
-            $file = File::find($file->id);
-            Storage::delete($file->file_path);
-            $file->name = $request->input('name');
-            $file->file_path = '/uploads/' . $fileName;
-        }
-        $file->save();
-
-        return response()->json(
-            [
-                'message' => 'File updated successfully.',
-                'data' => $file
-            ]
-        );
+        return $this->customResponse('File updated successfully.',$file);
     }
     public function destroy(File $file)
     {
+        DB::beginTransaction();
         // Delete the file from storage
         Storage::delete($file->file_path);
 
         // Delete the database record
         $file->delete();
 
-
-        return response()->json(
-            [
-                'message' => 'File deleted successfully.',
-                'data' => null
-            ]
-        );
+        DB::commit();
+        return $this->customResponse('File deleted successfully.',null);
     }
 }
