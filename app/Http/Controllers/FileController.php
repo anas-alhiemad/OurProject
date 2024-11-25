@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Files\CheckInRequest;
 use App\Http\Requests\Files\CreateFileRequest;
 use App\Http\Requests\Files\UpdateFileRequest;
 use App\Models\File;
@@ -43,5 +44,15 @@ class FileController extends Controller
     public function destroy(File $file)
     {
         return $this->fileService->destroy($file);
+    }
+
+    public function checkIn(CheckInRequest $request)
+    {
+        return $this->fileService->checkIn($request);
+    }
+
+    public function checkOut(CheckInRequest $request)
+    {
+        return $this->fileService->checkOut($request);
     }
 }

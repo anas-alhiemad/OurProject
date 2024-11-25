@@ -2,6 +2,7 @@
 
 namespace App\Services\FileServices;
 
+use App\Http\Requests\Files\CheckInRequest;
 use App\Http\Requests\Files\CreateFileRequest;
 use App\Http\Requests\Files\UpdateFileRequest;
 use App\Models\File;
@@ -34,13 +35,13 @@ class UserFileService extends BaseService
         $newFile->file_path = '/uploads/' . $fileName;
         $newFile->save();
         DB::commit();
-        return $this->customResponse('File uploaded successfully.',$newFile);
+        return $this->customResponse('File uploaded successfully.', $newFile);
     }
 
     public function get()
     {
         $files = File::all();
-        return $this->customResponse('Files list',$files);
+        return $this->customResponse('Files list', $files);
     }
 
     public function update(UpdateFileRequest $request, File $file)
@@ -69,7 +70,7 @@ class UserFileService extends BaseService
             DB::rollBack();
         }
 
-        return $this->customResponse('File updated successfully.',$file);
+        return $this->customResponse('File updated successfully.', $file);
     }
     public function destroy(File $file)
     {
@@ -81,6 +82,48 @@ class UserFileService extends BaseService
         $file->delete();
 
         DB::commit();
-        return $this->customResponse('File deleted successfully.',null);
+        return $this->customResponse('File deleted successfully.', null);
+    }
+    public function checkIn(CheckInRequest $request)
+    {
+        $fileIds = $request->input('file_ids');
+        DB::beginTransaction();
+        try {
+            foreach ($fileIds as $fileId) {
+                $file = File::find($fileId);
+                if ($file && !$file->is_checked_in) {
+                    $file->is_checked_in = true;
+                    $file->save();
+                } else {
+                    throw new \Exception("File ID {$fileId} is already checked in or does not exist.");
+                }
+            }
+            DB::commit();
+            return response()->json(['message' => 'Files checked in successfully.'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+    public function checkOut(CheckInRequest $request)
+    {
+        $fileIds = $request->input('file_ids');
+        DB::beginTransaction();
+        try {
+            foreach ($fileIds as $fileId) {
+                $file = File::find($fileId);
+                if ($file && $file->is_checked_in) {
+                    $file->is_checked_in = false;
+                    $file->save();
+                } else {
+                    throw new \Exception("File ID {$fileId} is already checked out or does not exist.");
+                }
+            }
+            DB::commit();
+            return response()->json(['message' => 'Files checked in successfully.'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 }

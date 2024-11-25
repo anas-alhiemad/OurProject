@@ -31,16 +31,16 @@ Route::group([
     Route::post('/refresh', [UserAuthController::class, 'refresh']);
     Route::get('/userProfile', [UserAuthController::class, 'userProfile']);
     Route::get('/verify/{token}', [UserAuthController::class, 'verify'])->middleware('transaction');
-    });    
+    });
 
 Route::group([
     'prefix' => 'admin/status'
     ],function(){
     Route::post('/changeStatus/{userId}', [AdminController::class, 'changeStatus'])->middleware('auth:admin','transaction');
     Route::post('/showUserPending', [AdminController::class, 'showUserPending'])->middleware('auth:admin');
-    });    
+    });
 
-    
+
 Route::group([
     'prefix' => 'user/group'
     ],function(){
@@ -48,14 +48,14 @@ Route::group([
     Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user','transaction');
     Route::post('/deleteGroup/{id}', [GroupsController::class, 'deleteGroup'])->middleware('auth:user','transaction');
     Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
-    });    
+    });
 
     // Route::middleware(['checkUserType:admin,user'])->group(function () {
     //     Route::get('/showGroup', [GroupsController::class, 'showGroup']);
     // });
 
 
-    
+
     // Routes for Files
     Route::group([
         //'middleware' => '',
@@ -65,6 +65,11 @@ Route::group([
         Route::post('/upload', [FileController::class, 'upload']);
         Route::post('/update/{file}', [FileController::class, 'update']);
         Route::delete('/delete/{file}', [FileController::class, 'destroy']);
+
+
+        Route::post('/checkIn', [FileController::class, 'checkIn']);
+
+        Route::post('/checkOut', [FileController::class, 'checkOut']);
     });
 
 
