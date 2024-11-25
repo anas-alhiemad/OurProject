@@ -1,9 +1,8 @@
 <?php
 namespace App\Services\GroupServices;
 
+use App\Models\User;
 use App\Models\Group;
-use Illuminate\Support\Facades\DB;
-use SebastianBergmann\Type\Exception;
 
 class UdatingGroups{
         protected $model;
@@ -12,36 +11,27 @@ class UdatingGroups{
             }
 
 
-        public function isOwner($id){
-            $group = $this->model->whereId($id)->first();
-            $userId = auth()->guard('user')->id();
-
-            if ($group->created_by == $userId) { return true ;} 
-                                          else {return false;}
-                
-            }
+        public function isOwner($user,$group)
+        { 
+            if ($user->can('update', $group)) 
+                        return true;
+            return false;            
+        }
 
 
             
         public function updateGroup($data,$id)
         {
             $group = $this->model->whereId($id)->first();
-            DB::beginTransaction();
 
-            try {
-                $owner = $this->isOwner($id);
+            $user = User::whereId(auth()->guard('user')->id())->first(); 
+            
+            $owner = $this->isOwner($user,$group); 
                 if ($owner) {
                 $group->update($data->validated()); 
-                DB::commit();
-                return response()->json([
-                    "message" => "Group has been Updated successfuly "
-                ],200);}
+                return response()->json(["message" => "Group has been Updated successfuly "],200);}
                 else{
                     return response()->json(['Message' => 'You do not have the authority to edit the group.'], 422);
                 }
 
-            } catch (Exception $e) {
-                DB::rollBack();
-                throw new Exception("Error updating Group: " . $e->getMessage());
-            }
         }}
