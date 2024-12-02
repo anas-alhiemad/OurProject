@@ -2,16 +2,20 @@
 
 namespace App\Services\FileServices;
 
+use App\Exports\FileOperationsExport;
 use App\Http\Requests\Files\CheckInRequest;
 use App\Http\Requests\Files\CreateFileRequest;
 use App\Http\Requests\Files\UpdateFileRequest;
 use App\Models\File;
+use App\Models\FileOperation;
 use App\Services\BaseService;
 use Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserFileService extends BaseService
 {
@@ -32,8 +36,10 @@ class UserFileService extends BaseService
 
         $newFile = new File;
         $newFile->name = $request->input('name');
+        // $newFile->group_id = 1;
         $newFile->file_path = '/uploads/' . $fileName;
         $newFile->save();
+        $this->logOperation($newFile->id, 'upload');
         DB::commit();
         return $this->customResponse('File uploaded successfully.', $newFile);
     }
@@ -65,6 +71,7 @@ class UserFileService extends BaseService
                 $file->file_path = '/uploads/' . $fileName;
             }
             $file->save();
+            $this->logOperation($file->id, 'update');
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -80,7 +87,7 @@ class UserFileService extends BaseService
 
         // Delete the database record
         $file->delete();
-
+        $this->logOperation($file->id, 'delete');
         DB::commit();
         return $this->customResponse('File deleted successfully.', null);
     }
@@ -94,6 +101,7 @@ class UserFileService extends BaseService
                 if ($file && !$file->is_checked_in) {
                     $file->is_checked_in = true;
                     $file->save();
+                    $this->logOperation($file->id, 'check in');
                 } else {
                     throw new \Exception("File ID {$fileId} is already checked in or does not exist.");
                 }
@@ -115,15 +123,27 @@ class UserFileService extends BaseService
                 if ($file && $file->is_checked_in) {
                     $file->is_checked_in = false;
                     $file->save();
+                    $this->logOperation($file->id, 'check out');
                 } else {
                     throw new \Exception("File ID {$fileId} is already checked out or does not exist.");
                 }
             }
             DB::commit();
-            return response()->json(['message' => 'Files checked in successfully.'], 200);
+            return response()->json(['message' => 'Files checked out successfully.'], 200);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 400);
         }
+    }
+
+    public function exportOperations(File $file)
+    {
+        // $id = $file->id;
+        return (new FileOperationsExport())->export($file->id);
+        // return Excel::download(new FileOperationsExport($id), 'file_operations.xlsx');
+    }
+    private function logOperation($fileId, $operation)
+    {
+        FileOperation::create(['file_id' => $fileId, 'operation' => $operation, 'user_id' => auth()->user()->id]);
     }
 }

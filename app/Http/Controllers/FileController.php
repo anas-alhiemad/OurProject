@@ -24,7 +24,9 @@ class FileController extends Controller
     public function __construct(UserFileService $fileService)
     {
         $this->fileService = $fileService;
+        $this->middleware('auth:user', ['except' => ['login', 'register', 'verify']]);
     }
+
 
     public function upload(CreateFileRequest $request)
     {
@@ -54,5 +56,10 @@ class FileController extends Controller
     public function checkOut(CheckInRequest $request)
     {
         return $this->fileService->checkOut($request);
+    }
+
+    public function exportOperations(File $file)
+    {
+        return $this->fileService->exportOperations($file);
     }
 }

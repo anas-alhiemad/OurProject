@@ -8,5 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class File extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'file_path', 'is_checked_in'];
+    protected $fillable = ['id', 'name', 'file_path', 'is_checked_in'];
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
 }

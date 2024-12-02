@@ -35,7 +35,7 @@ class CreatingGroups{
                 "message" => "Group has been created successfuly ",
                 "group" => $group
             ],200);
-     
+
     }
  }
-    
+
