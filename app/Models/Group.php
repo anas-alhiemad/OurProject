@@ -16,7 +16,12 @@ class Group extends Model
     ];
 
 
-    public function userGroup(){
-        return $this->hasMany(UserGroup::class,'groupId');
+    public function userGroup()
+    {
+        return $this->hasMany(UserGroup::class, 'groupId');
+    }
+    public function files()
+    {
+        return $this->hasMany(File::class);
     }
 }
