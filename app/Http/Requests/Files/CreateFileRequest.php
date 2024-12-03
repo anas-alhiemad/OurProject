@@ -24,7 +24,7 @@ class CreateFileRequest extends BaseRequest
     {
         return [
             "name" => "required|max:25",
-            "file" => "required|file|mimes:docx,excel",
+            "file" => "required|file|mimes:docx,excel,pdf",
         ];
     }
 }
