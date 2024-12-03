@@ -28,20 +28,16 @@ class UdatingGroups{
             $group = $this->model->whereId($id)->first();
             DB::beginTransaction();
 
-            try {
-                $owner = $this->isOwner($id);
-                if ($owner) {
-                $group->update($data->validated()); 
-                DB::commit();
-                return response()->json([
-                    "message" => "Group has been Updated successfuly "
-                ],200);}
-                else{
-                    return response()->json(['Message' => 'You do not have the authority to edit the group.'], 422);
-                }
 
-            } catch (Exception $e) {
-                DB::rollBack();
-                throw new Exception("Error updating Group: " . $e->getMessage());
-            }
+            $user = User::whereId(auth()->guard('user')->id())->first(); 
+            
+            $owner = $this->isOwner($user,$group); 
+            if ($owner) {
+                $group->update($data->validated()); 
+                return response()->json(["message" => "Group has been Updated successfuly "],200);}
+                
+            return response()->json(['Message' => 'You do not have the authority to edit the group.'], 422);
+                
+
+
         }}

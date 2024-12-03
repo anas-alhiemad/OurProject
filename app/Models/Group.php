@@ -24,4 +24,10 @@ class Group extends Model
     {
         return $this->hasMany(File::class);
     }
+    
+
+    public function invitation(){
+        return $this->hasMany(Invitation::class,'groupId');
+    }
+    
 }
