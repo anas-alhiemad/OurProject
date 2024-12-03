@@ -24,13 +24,14 @@ class GroupPolicy
     //     //
     // }
 
-    // /**
-    //  * Determine whether the user can create models.
-    //  */
-    // public function create(Admin $admin): bool
-    // {
-    //     //
-    // }
+    public function create(User $user , Group $group): bool
+    {
+        if (auth('user')->check()) {
+            return $user->id === $group->created_by;
+        }
+
+       return false;
+    }
 
     public function update(User $user, Group $group): bool
     {
@@ -50,13 +51,15 @@ class GroupPolicy
        return false;
     }
 
-    // /**
-    //  * Determine whether the user can restore the model.
-    //  */
-    // public function restore(Admin $admin, Group $group): bool
-    // {
-    //     //
-    // }
+    
+    public function cancel(User $user , Group $group): bool
+    {
+        if (auth('user')->check()) {
+            return $user->id === $group->created_by;
+        }
+
+       return false;
+    }
 
     // /**
     //  * Determine whether the user can permanently delete the model.

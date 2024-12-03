@@ -27,11 +27,11 @@ class UdatingGroups{
             $user = User::whereId(auth()->guard('user')->id())->first(); 
             
             $owner = $this->isOwner($user,$group); 
-                if ($owner) {
+            if ($owner) {
                 $group->update($data->validated()); 
                 return response()->json(["message" => "Group has been Updated successfuly "],200);}
-                else{
-                    return response()->json(['Message' => 'You do not have the authority to edit the group.'], 422);
-                }
+                
+            return response()->json(['Message' => 'You do not have the authority to edit the group.'], 422);
+                
 
         }}

@@ -2,11 +2,13 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminAuthController;
-use App\Http\Controllers\UserAuthController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\DisplayController;
+use App\Http\Controllers\UserAuthController;
+use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\InvitationController;
 
 
 
@@ -49,6 +51,31 @@ use App\Http\Controllers\GroupsController;
         Route::post('/deleteGroup/{id}', [GroupsController::class, 'deleteGroup'])->middleware('auth:user','transaction');
         Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
         });
+
+
+
+    Route::group([
+        'prefix' => 'user/invitation'
+        ],function(){
+        Route::post('/sendinvitation/{userInvitedId}/{GroupId}', [InvitationController::class, 'sendInvitation'])->middleware('transaction');
+        Route::post('/cancelinvitation/{InvitationId}', [InvitationController::class, 'cancelInvitation'])->middleware('transaction');    
+        Route::get('/indexinvitation', [InvitationController::class, 'indexInvitation']);    
+        Route::get('/invitationuserSpecific', [InvitationController::class, 'invitationUserSpecific']);    
+        Route::get('/invitationgroupSpecific/{groupId}', [InvitationController::class, 'invitationGroupSpecific']);    
+        Route::post('/acceptInvitation/{InvitationId}', [InvitationController::class, 'acceptInvitation'])->middleware('transaction');    
+        Route::post('/declineInvitation/{InvitationId}', [InvitationController::class, 'declineInvitation'])->middleware('transaction');    
+        });
+
+
+
+
+    Route::group([
+        'prefix' => 'display'
+        ],function(){
+        Route::get('/show', [DisplayController::class, 'index']);
+        });
+
+
 
         // Route::middleware(['checkUserType:admin,user'])->group(function () {
         //     Route::get('/showGroup', [GroupsController::class, 'showGroup']);

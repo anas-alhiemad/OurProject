@@ -19,4 +19,10 @@ class Group extends Model
     public function userGroup(){
         return $this->hasMany(UserGroup::class,'groupId');
     }
+    
+
+    public function invitation(){
+        return $this->hasMany(Invitation::class,'groupId');
+    }
+    
 }
