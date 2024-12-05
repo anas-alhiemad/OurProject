@@ -24,6 +24,7 @@ class UserAuthController extends Controller
     public function login(LoginRequest $request)
     {
 
+    //    throw new Exception('there are exce');
         return (new UserLoginService())->Login($request);
     }
 
