@@ -25,6 +25,7 @@ class FileController extends Controller
     {
         $this->fileService = $fileService;
         $this->middleware('auth:user', ['except' => ['login', 'register', 'verify']]);
+        $this->middleware('userInGroup')->only(['checkIn', 'checkOut']);
     }
 
 
