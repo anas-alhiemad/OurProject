@@ -29,15 +29,15 @@ class LoginAttemptsMiddleware
             return response()->json(['message' => 'You have exceeded the maximum number of login attempts. Try again after several minutes.'], 429);
         }
 
-              $response = $next($request);
+        $response = $next($request);
 
 
         if ($response->status() === 401) {
             $attempts = Cache::get($key, 0) + 1;
             Cache::put($key, $attempts, $this->lockoutTime);
 
-                    if ($attempts >= $this->maxAttempts) {
-                return response()->json(['message' =>'You have exceeded the maximum number of login attempts. Try again after several minutes.'], 429);
+            if ($attempts >= $this->maxAttempts) {
+                return response()->json(['message' => 'You have exceeded the maximum number of login attempts. Try again after several minutes.'], 429);
             }
         } else {
 

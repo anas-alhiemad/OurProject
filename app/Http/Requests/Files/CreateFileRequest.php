@@ -24,6 +24,7 @@ class CreateFileRequest extends BaseRequest
     {
         return [
             "name" => "required|max:25",
+            'group_id' => 'required|exists:groups,id',
             "file" => "required|file|mimes:docx,excel,pdf",
         ];
     }
