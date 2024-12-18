@@ -13,15 +13,25 @@ use App\Services\InviteService\DisplayInvitationService;
 class InvitationController extends Controller
 {
 
-    public function __construct() {
-        $this->middleware('auth:user');
-    }
+    protected $sendInvitationService;
+    protected $displayInvitationService;
+    protected $cancelInvitationService;
+    protected $acceptInvitationService;
+    protected $declineInvitationService;
 
+    public function __construct(SendInvitationService $sendInvitationService,DisplayInvitationService $displayInvitationService,CancelInvitationService $cancelInvitationService ,AcceptInvitationService $acceptInvitationService,DeclineInvitationService $declineInvitationService)
+    {
+        $this->sendInvitationService = $sendInvitationService;
+        $this->displayInvitationService = $displayInvitationService;
+        $this->cancelInvitationService = $cancelInvitationService;
+        $this->acceptInvitationService = $acceptInvitationService;
+        $this->declineInvitationService = $declineInvitationService;
+    }
 
     public function indexInvitation()
     {
 
-        return (new DisplayInvitationService)->index();
+        return $this->displayInvitationService->index();
     }
 
 
@@ -29,13 +39,13 @@ class InvitationController extends Controller
     public function sendInvitation($userInvitedId,$GroupId)
     {
 
-        return (new SendInvitationService)->createInvitation($userInvitedId,$GroupId);
+        return $this->sendInvitationService->createInvitation($userInvitedId,$GroupId);
     }
 
 
     public function cancelInvitation($invitationId)
     {
-        return (new CancelInvitationService)->cancelInvitation($invitationId);
+        return $this->cancelInvitationService->cancelInvitation($invitationId);
     }
 
     
@@ -43,25 +53,25 @@ class InvitationController extends Controller
     public function invitationUserSpecific()
     {
 
-        return (new DisplayInvitationService)->UserSpecific();
+        return $this->displayInvitationService->userSpecific();
     }
 
 
     public function invitationGroupSpecific($GroupId)
     {
 
-        return (new DisplayInvitationService)->GroupSpecific($GroupId);
+        return $this->displayInvitationService->GroupSpecific($GroupId);
     }
 
 
     public function acceptInvitation($invitationId)
     {
 
-        return (new AcceptInvitationService)->acceptInvitation($invitationId);
+        return $this->acceptInvitationService->acceptInvitation($invitationId);
     }
 
     public function declineInvitation($invitationId)
     {
-        return (new DeclineInvitationService)->declineInvitation($invitationId);
+        return $this->declineInvitationService->declineInvitation($invitationId);
     }
 }

@@ -14,38 +14,36 @@ use Validator;
 
 class UserAuthController extends Controller
 {
+    
+    protected $userRegisterService;
+    protected $userLoginService;
 
-    public function __construct()
+    public function __construct(UserRegsiterService $userRegisterService,UserLoginService $userLoginService)
     {
-        $this->middleware('auth:user', ['except' => ['login', 'register', 'verify']]);
+        $this->userRegisterService = $userRegisterService;
+        $this->userLoginService = $userLoginService;
     }
-
 
     public function login(LoginRequest $request)
     {
 
     //    throw new Exception('there are exce');
-        return (new UserLoginService())->Login($request);
+        return $this->userLoginService->Login($request);
     }
 
 
 
     public function verify($token)
     {
-        $user = User::whereVerification_token($token)->first();
-        if (!$user) {
-            return response()->json(["Message" => "this token is invalid"], 400);
-        }
 
-        $user->verification_token = null;
-        $user->email_verified_at = now();
-        $user->save();
-        return response()->json(["Message" => "your account has been verified "], 200);
+        return $this->userRegisterService->verifyAccount($token);
+        // return response()->json(["Message" => "your account has been verified "], 200);
     }
+
 
     public function register(UserRegisterRequest $request)
     {
-        return (new UserRegsiterService())->register($request);
+        return $this->userRegisterService->register($request);
     }
 
 
