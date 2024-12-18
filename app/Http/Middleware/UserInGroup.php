@@ -2,10 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\File;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserInGroup
@@ -17,12 +19,20 @@ class UserInGroup
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // $userId = Auth::id();
-        // $user = User::find($userId);
-        // if ($user && $user->groups()->where('group_id', $groupId)->exists()) {
-        return $next($request);
-        // } else {
-        //     return response('You can\'t use files in this gourp', Response::HTTP_FORBIDDEN);
-        // }
+        $fileIds = $request->input('file_ids');
+        $userId = Auth::id();
+        $user = User::find($userId);
+        foreach ($fileIds as $fileId) {
+            $file = File::find($fileId);
+            if (
+                $file && $user   &&
+                DB::table('user_groups')
+                ->join('files', 'user_groups.groupId', '=', 'files.group_id')
+                ->where('user_groups.userId', $userId)->where('files.id', $fileId)->exists()
+            ) {
+                return $next($request);
+            }
+        }
+        return response(["message" => 'You can\'t use files in this gourp', 'data' => null], Response::HTTP_FORBIDDEN);
     }
 }
