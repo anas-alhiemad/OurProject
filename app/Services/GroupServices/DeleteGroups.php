@@ -3,17 +3,20 @@ namespace App\Services\GroupServices;
 
 use App\Models\User;
 use App\Models\Group;
+use App\Repositories\UserRepository;
 use App\Repositories\GroupRepository;
 
 
 class DeleteGroups 
 {
- 
+
     protected $groupRepository;
-    
-    public function __construct(GroupRepository $groupRepository)
+    protected $userRepository;
+
+    public function __construct(GroupRepository $groupRepository,UserRepository $userRepository)
     {
         $this->groupRepository = $groupRepository;
+        $this->userRepository = $userRepository;
     }
 
 
@@ -29,7 +32,7 @@ class DeleteGroups
         {
             $group = $this->groupRepository->getById($groupId);
            
-            $user = User::whereId(auth()->guard('user')->id())->first(); 
+            $user =  $this->userRepository->getById(auth()->guard('user')->id()); 
            
             $owner = $this->isOwner($user,$group); 
            
