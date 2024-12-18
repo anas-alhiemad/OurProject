@@ -1,25 +1,18 @@
 <?php
 namespace App\Services\GroupServices;
 
-use App\Models\Group;
-
-use App\Repositories\GroupRepository;
-
-
-class UdatingGroups{
-        protected $model;
-        function __construct(){
-                $this -> model = new Group();
-            }
+use App\Repositories\UserRepository;
 
 
 class UdatingGroups
 {
     protected $groupRepository;
-    
-    public function __construct(GroupRepository $groupRepository)
+    protected $userRepository;
+
+    public function __construct(GroupRepository $groupRepository,UserRepository $userRepository)
     {
         $this->groupRepository = $groupRepository;
+        $this->userRepository = $userRepository;
     }
 
 
@@ -37,7 +30,7 @@ class UdatingGroups
     public function updateGroup($groupId,$data)
     {
       
-        $user = User::whereId(auth()->guard('user')->id())->first(); 
+        $user =  $this->userRepository->getById(auth()->guard('user')->id()); 
         $group = $this->groupRepository->getById($groupId);
         $owner = $this->isOwner($user,$group); 
         
