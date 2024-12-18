@@ -8,6 +8,8 @@ use App\Http\Requests\Files\CreateFileRequest;
 use App\Http\Requests\Files\UpdateFileRequest;
 use App\Models\File;
 use App\Models\FileOperation;
+use App\Models\Group;
+use App\Models\User;
 use App\Services\BaseService;
 use Validator;
 use Illuminate\Http\Request;
@@ -26,7 +28,7 @@ class UserFileService extends BaseService
         $file = $request->file('file');
         $fileName = $file->getClientOriginalName();
         // $filePath = $file->storeAs('uploads', $fileName);
-
+//nourhan
         $disk = Storage::build([
             'driver' => 'local',
             'root' =>   '/uploads',
@@ -38,6 +40,7 @@ class UserFileService extends BaseService
         $newFile->name = $request->input('name');
         // $newFile->group_id = 1;
         $newFile->file_path = '/uploads/' . $fileName;
+        $newFile->group_id = $request->input('group_id');
         $newFile->save();
         $this->logOperation($newFile->id, 'upload');
         DB::commit();

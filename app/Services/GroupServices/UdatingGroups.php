@@ -1,9 +1,16 @@
 <?php
 namespace App\Services\GroupServices;
 
-use App\Models\User;
 use App\Models\Group;
+
 use App\Repositories\GroupRepository;
+
+
+class UdatingGroups{
+        protected $model;
+        function __construct(){
+                $this -> model = new Group();
+            }
 
 
 class UdatingGroups
@@ -16,12 +23,15 @@ class UdatingGroups
     }
 
 
-    public function isOwner($user,$group)
-    { 
-        if ($user->can('update', $group)) 
-                    return true;
-        return false;            
-    }
+        public function isOwner($id){
+            $group = $this->model->whereId($id)->first();
+            $userId = auth()->guard('user')->id();
+
+            if ($group->created_by == $userId) { return true ;} 
+                                          else {return false;}
+                
+            }
+
 
 
     public function updateGroup($groupId,$data)
