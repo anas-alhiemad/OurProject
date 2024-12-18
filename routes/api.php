@@ -22,16 +22,16 @@ Route::group([
 
 
 
-Route::group([
-    'prefix' => 'auth/user'
-    ],function(){
-    Route::post('/login', [UserAuthController::class, 'login']);
-    Route::post('/register', [UserAuthController::class, 'register'])->middleware('transaction');
-    Route::post('/logout', [UserAuthController::class, 'logout']);
-    Route::post('/refresh', [UserAuthController::class, 'refresh']);
-    Route::get('/userProfile', [UserAuthController::class, 'userProfile']);
-    Route::get('/verify/{token}', [UserAuthController::class, 'verify'])->middleware('transaction');
-    });
+    Route::group([
+        'prefix' => 'user/group'
+        ],function(){
+        Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user','transaction');
+        Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user','transaction');
+        Route::post('/deleteGroup/{id}', [GroupsController::class, 'deleteGroup'])->middleware('auth:user','transaction');
+        Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
+        Route::get('/usersNotInGroup/{groupId}', [GroupsController::class, 'usersNotInGroup']);
+        });
+
 
 Route::group([
     'prefix' => 'admin/status'
