@@ -89,8 +89,8 @@ class UserFileService extends BaseService
         Storage::delete($file->file_path);
 
         // Delete the database record
-        $file->delete();
         $this->logOperation($file->id, 'delete');
+        $file->delete();
         DB::commit();
         return $this->customResponse('File deleted successfully.', null);
     }
