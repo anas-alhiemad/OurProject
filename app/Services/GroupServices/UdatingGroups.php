@@ -17,14 +17,13 @@ class UdatingGroups
     }
 
 
-        public function isOwner($id){
-            $group = $this->model->whereId($id)->first();
-            $userId = auth()->guard('user')->id();
+    public function isOwner($user,$group)
+    { 
+        if ($user->can('update', $group)) 
+                    return true;
+        return false;            
+    }
 
-            if ($group->created_by == $userId) { return true ;} 
-                                          else {return false;}
-                
-            }
 
 
 
