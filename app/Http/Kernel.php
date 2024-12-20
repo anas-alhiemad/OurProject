@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'checkUserType' => \App\Http\Middleware\CheckUserType::class,
         'transaction' =>    \App\Http\Middleware\AcidTransactionMiddleware::class,
         'userInGroup' =>    \App\Http\Middleware\UserInGroup::class,
+        'attempts' =>\App\Http\Middleware\LoginAttemptsMiddleware::class,
     ];
 }
