@@ -18,7 +18,7 @@ class DisplayGroup
     public function indexGroups()
     {
         $group = $this->groupRepository->getAll();
-        return GroupResource::collection($group);
+        return $group;
 
     }
 
