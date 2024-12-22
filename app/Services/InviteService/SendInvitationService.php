@@ -4,12 +4,21 @@ namespace App\Services\InviteService;
 use App\Models\Group;
 use App\Models\User;
 use App\Models\Invitation;
+use App\Repositories\GroupRepository;
+use App\Repositories\InvitationRepository;
+use App\Repositories\UserRepository;
 
 class SendInvitationService 
 {
-    protected $model;
-    function __construct(){
-        $this -> model = new Invitation();
+    protected $invitationRepository;
+    protected $groupRepository;
+    protected $userRepository;
+
+    public function __construct(InvitationRepository $invitationRepository,GroupRepository $groupRepository,UserRepository $userRepository)
+    {
+        $this->invitationRepository = $invitationRepository;
+        $this->groupRepository = $groupRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function isOwner($user,$group)
@@ -19,20 +28,18 @@ class SendInvitationService
         return false;            
     }
 
-        public function createInvitation($userInvitedId,$GroupId)
+        public function createInvitation($userInvitedId,$groupId)
         {
-            $group = Group::whereId($GroupId)->first(); 
+            $group = $this->groupRepository->getById($groupId);
            
-            $user = User::whereId(auth()->guard('user')->id())->first(); 
+            $user =  $this->userRepository->getById(auth()->guard('user')->id()); 
           
             $owner = $user->can('create', $group); 
 
             if ($owner) {
-                    $invitation = new Invitation();
-                    $invitation->groupId = $GroupId;
-                    $invitation->invitedUserId = $userInvitedId;
-                    $invitation->save();
-                    return response()->json(["message" => "The invitation has been sent successfully","InfoInvite"=>$invitation],200);
+                $invitationInfo = ['groupId'=>$groupId,'invitedUserId'=>$userInvitedId];
+                $invitationCreated = $this->invitationRepository->create($invitationInfo);
+                    return response()->json(["message" => "The invitation has been sent successfully","InfoInvite"=>$invitationCreated],200);
                 }
         
                 return response()->json(['Message' => 'You do not have the authority to send invitation.'], 422);   

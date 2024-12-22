@@ -9,29 +9,51 @@ use App\Services\GroupServices\UdatingGroups;
 use App\Services\GroupServices\CreatingGroups;
 use App\Http\Requests\Group\UpdatingGroupRequest;
 use App\Http\Requests\Group\ConstructionGroupRequest;
+use App\Services\GroupServices\DisplayGroup;
 
 class GroupsController extends Controller
 {
 
-    public function showGroup()
+    protected $createGroupService;
+    protected $updateGroupService;
+    protected $deletedGroupService;
+    protected $displayGroupService;
+
+    public function __construct(CreatingGroups $createGroupService,UdatingGroups $updateGroupService,DeleteGroups $deletedGroupService,DisplayGroup $displayGroupService)
     {
-        $group = Group::all();
-         return GroupResource::collection($group);
+        $this->createGroupService = $createGroupService;
+        $this->updateGroupService = $updateGroupService;
+        $this->deletedGroupService = $deletedGroupService;
+        $this->displayGroupService = $displayGroupService;
+
     }
 
+    public function showGroup()
+    {
+        $groups = $this->displayGroupService->indexGroups();
+         return  $groups;
+    }
+
+    public function usersNotInGroup($groupId)
+    {
+        $users= $this->displayGroupService->usersNotInGroup($groupId);
+         return  $users;
+    }
+
+    
     public function createGroup(ConstructionGroupRequest $request)
     {
-        return (new CreatingGroups())->create($request);
+        return $this->createGroupService->create($request);
     }
     
 
-    public function updateGroup(UpdatingGroupRequest $request,$id)
+    public function updateGroup(UpdatingGroupRequest $request,$groupId)
     {
-        return (new UdatingGroups())->updateGroup($request,$id);
+        return $this->updateGroupService->updateGroup($groupId,$request);
     }
 
-    public function deleteGroup($id)
+    public function deleteGroup($groupId)
     {
-        return (new DeleteGroups())->deleteGroup($id);
+        return  $this->deletedGroupService->deleteGroup($groupId);
     }
 }
