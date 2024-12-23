@@ -26,20 +26,22 @@ class UserFileService extends BaseService
         DB::beginTransaction();
 
         $file = $request->file('file');
-        $fileName = $file->getClientOriginalName();
+        $fileName = time() . '-' . $file->getClientOriginalName();
+        $filePath = $file->storeAs('uploads', $fileName, 'public');
         // $filePath = $file->storeAs('uploads', $fileName);
-//nourhan
-        $disk = Storage::build([
-            'driver' => 'local',
-            'root' =>   '/uploads',
-        ]);
+        //nourhan
+        // $disk = Storage::build([
+        //     'driver' => 'local',
+        //     'root' =>   '/uploads',
+        // ]);
 
-        $disk->put($fileName, file_get_contents($file->path()));
+        // $disk->put($fileName, file_get_contents($file->path()));
 
         $newFile = new File;
         $newFile->name = $request->input('name');
         // $newFile->group_id = 1;
-        $newFile->file_path = '/uploads/' . $fileName;
+        // $newFile->file_path = '/uploads/' . $fileName;
+        $newFile->file_path =  $filePath;
         $newFile->group_id = $request->input('group_id');
         $newFile->save();
         $this->logOperation($newFile->id, 'upload');
