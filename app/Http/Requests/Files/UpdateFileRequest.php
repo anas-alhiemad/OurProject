@@ -24,7 +24,7 @@ class UpdateFileRequest extends BaseRequest
     {
         return [
             "name" => "required|max:25",
-            "file" => "file|mimes:mimes:docx,excel",
+            "file" => "file|mimes:docx,excel,pdf,doc,csv,xlsx,xls,ppt,odt,ods,odp",
         ];
     }
 }
