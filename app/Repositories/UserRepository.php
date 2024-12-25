@@ -63,4 +63,15 @@ class UserRepository extends BaseRepository implements RepositoryInterface
         $user->save();
         return response()->json(['message' => 'User successfully change status']);
     }
+
+
+
+    public function usersNotInGroup($groupId)
+    {
+        $usersNotInGroup = User::leftJoin('user_groups', function ($join) use ($groupId) {
+            $join->on('users.id', '=', 'user_groups.userId')
+                 ->where('user_groups.groupId', '=', $groupId);
+        })->whereNull('user_groups.userId')->select('users.id','name','userName','email','photo','users.updated_at','users.created_at')->get();       
+        return $usersNotInGroup;
+    }
 }

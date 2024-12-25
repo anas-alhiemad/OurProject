@@ -42,29 +42,32 @@ Route::group([
 });
 
 
-Route::group([
-    'prefix' => 'user/group'
-], function () {
-    Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user', 'transaction');
-    Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user', 'transaction');
-    Route::post('/deleteGroup/{id}', [GroupsController::class, 'deleteGroup'])->middleware('auth:user', 'transaction');
-    Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
-    Route::get('/usersNotInGroup/{groupId}', [GroupsController::class, 'usersNotInGroup']);
-});
+    Route::group([
+        'prefix' => 'user/group',
+        'middleware' => 'auth:user,admin'
+        ],function(){
+        Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user','transaction');
+        Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user','transaction');
+        Route::post('/deleteGroup/{id}', [GroupsController::class, 'deleteGroup'])->middleware('auth:user','transaction');
+        Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
+        Route::get('/usersNotInGroup/{groupId}', [GroupsController::class, 'usersNotInGroup']);
+        Route::get('/usersInGroup/{groupId}', [GroupsController::class, 'usersInGroup']);
+        });
 
 
 
-Route::group([
-    'prefix' => 'user/invitation'
-], function () {
-    Route::post('/sendinvitation/{userInvitedId}/{GroupId}', [InvitationController::class, 'sendInvitation'])->middleware('transaction');
-    Route::post('/cancelinvitation/{InvitationId}', [InvitationController::class, 'cancelInvitation'])->middleware('transaction');
-    Route::get('/indexinvitation', [InvitationController::class, 'indexInvitation']);
-    Route::get('/invitationuserSpecific', [InvitationController::class, 'invitationUserSpecific']);
-    Route::get('/invitationgroupSpecific/{groupId}', [InvitationController::class, 'invitationGroupSpecific']);
-    Route::post('/acceptInvitation/{InvitationId}', [InvitationController::class, 'acceptInvitation'])->middleware('transaction');
-    Route::post('/declineInvitation/{InvitationId}', [InvitationController::class, 'declineInvitation'])->middleware('transaction');
-});
+    Route::group([
+        'prefix' => 'user/invitation',
+        'middleware' => 'auth:user,admin'
+        ],function(){
+        Route::post('/sendinvitation/{userInvitedId}/{GroupId}', [InvitationController::class, 'sendInvitation'])->middleware('transaction');
+        Route::post('/cancelinvitation/{InvitationId}', [InvitationController::class, 'cancelInvitation'])->middleware('transaction');    
+        Route::get('/indexinvitation', [InvitationController::class, 'indexInvitation']);    
+        Route::get('/invitationuserSpecific', [InvitationController::class, 'invitationUserSpecific']);    
+        Route::get('/invitationgroupSpecific/{groupId}', [InvitationController::class, 'invitationGroupSpecific']);    
+        Route::post('/acceptInvitation/{InvitationId}', [InvitationController::class, 'acceptInvitation'])->middleware('transaction');    
+        Route::post('/declineInvitation/{InvitationId}', [InvitationController::class, 'declineInvitation'])->middleware('transaction');    
+        });
 
 
 

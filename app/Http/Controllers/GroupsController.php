@@ -41,6 +41,14 @@ class GroupsController extends Controller
     }
 
     
+
+    public function usersInGroup($groupId)
+    {
+        $users= $this->displayGroupService->usersInGroup($groupId);
+         return  $users;
+    }
+
+    
     public function createGroup(ConstructionGroupRequest $request)
     {
         return $this->createGroupService->create($request);
