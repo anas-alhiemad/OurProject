@@ -37,7 +37,7 @@ class UserRegsiterService
     {
         $user = array_merge($userdata->validated(),
             ['password' => bcrypt($request->password),
-                'photo' => $request->file('photo')->store('userPhotos')
+            'photo' => 'upload/'.$request->file('photo')->store('userPhoto','public_upload')
             ]);
 
         $userCreated = $this->userRepository->create($user);    

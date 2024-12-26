@@ -33,7 +33,8 @@ class InvitationRepository extends BaseRepository implements RepositoryInterface
     public function userSpecificInvitation($userId)
     {
         $allInvitations =$this->model::where('invitedUserId',$userId)
-                                    ->whereStatus('pending')->get();                     
+                        ->whereStatus('pending')->with(['group','group.userGroup'=>function ($query) {
+                        $query->where('isOwner', 1)->with('user');}])->get();                     
         return $allInvitations;
     }
 
