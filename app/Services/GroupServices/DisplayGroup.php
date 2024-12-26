@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\GroupServices;
 
 use App\Http\Resources\GroupResource;
@@ -8,7 +9,7 @@ use App\Models\User;
 class DisplayGroup
 {
     protected $groupRepository;
-    
+
     public function __construct(GroupRepository $groupRepository)
     {
         $this->groupRepository = $groupRepository;
@@ -19,16 +20,21 @@ class DisplayGroup
     {
         $group = $this->groupRepository->getAll();
         return GroupResource::collection($group);
-
     }
 
 
     public function usersNotInGroup($groupId)
-{
-    $usersNotInGroup = User::whereDoesntHave('userGroup', function ($query) use ($groupId) {
-        $query->where('userGroup.id', $groupId);
-    })->get();
+    {
+        $usersNotInGroup = User::whereDoesntHave('userGroup', function ($query) use ($groupId) {
+            $query->where('userGroup.id', $groupId);
+        })->get();
 
-    return response()->json($usersNotInGroup);
-}
+        return response()->json($usersNotInGroup);
+    }
+
+    public function filesGroup($group)
+    {
+        $files = $group->files;
+        return $files;
+    }
 }
