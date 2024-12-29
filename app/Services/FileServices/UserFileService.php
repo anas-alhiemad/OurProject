@@ -57,6 +57,8 @@ class UserFileService extends BaseService
 
     public function update(UpdateFileRequest $request, File $file)
     {
+        if ($file == null)
+            return $this->customResponse('File not found.', null);
         DB::beginTransaction();
         try {
             if ($request->file('file') != null) {
@@ -86,6 +88,9 @@ class UserFileService extends BaseService
     }
     public function destroy(File $file)
     {
+        if ($file == null)
+            return $this->customResponse('File not found.', null);
+
         DB::beginTransaction();
         // Delete the file from storage
         Storage::delete($file->file_path);

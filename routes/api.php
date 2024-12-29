@@ -101,7 +101,7 @@ Route::group([
 });
 
 Route::post('/checkOut', [FileController::class, 'checkOut']);
-Route::post('/excel/{file}', action: [FileController::class, 'exportOperations']);
+Route::post('/files/excel/{file}', action: [FileController::class, 'exportOperations']);
 
 
 

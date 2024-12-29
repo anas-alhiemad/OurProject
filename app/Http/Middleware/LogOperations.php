@@ -18,11 +18,10 @@ class LogOperations
     public function handle(Request $request, Closure $next): Response
     {
         $operation = explode('/', $request->path())[2];
-        if ($operation == "delete" || $operation == "update" || $operation == "upload") {
+        if ($operation == "delete" || $operation == "update") {
             $fileId = $request->route()->parameters()["file"]->id;
             FileOperation::create(['file_id' => $fileId, 'operation' => $operation, 'user_id' => auth()->user()->id]);
-        }
-        if ($operation == "get") {
+        } else if ($operation == "get") {
         } else {
             $files = $request->input('file_ids', []);
             if (is_array($files)) {
