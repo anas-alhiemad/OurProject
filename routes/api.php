@@ -41,7 +41,6 @@ Route::group([
     Route::get('/showUserPending', [AdminController::class, 'showUserPending'])->middleware('auth:admin');
 });
 
-
     Route::group([
         'prefix' => 'user/group',
         'middleware' => 'auth:user,admin'
@@ -50,6 +49,7 @@ Route::group([
         Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user','transaction');
         Route::post('/deleteGroup/{id}', [GroupsController::class, 'deleteGroup'])->middleware('auth:user','transaction');
         Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
+        Route::get('/files/{group}', [GroupsController::class, 'filesGroup'])->middleware('checkUserType:admin,user');
         Route::get('/usersNotInGroup/{groupId}', [GroupsController::class, 'usersNotInGroup']);
         Route::get('/usersInGroup/{groupId}', [GroupsController::class, 'usersInGroup']);
         });
@@ -103,7 +103,7 @@ Route::group([
 });
 
 Route::post('/checkOut', [FileController::class, 'checkOut']);
-Route::post('/excel/{file}', action: [FileController::class, 'exportOperations']);
+Route::post('/files/excel/{file}', action: [FileController::class, 'exportOperations']);
 
 
 

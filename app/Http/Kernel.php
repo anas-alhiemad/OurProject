@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\LogOperations;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -42,6 +43,7 @@ class Kernel extends HttpKernel
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
+            'throttle:60,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -69,5 +71,6 @@ class Kernel extends HttpKernel
         'userInGroup' =>    \App\Http\Middleware\UserInGroup::class,
         'attempts' => \App\Http\Middleware\LoginAttemptsMiddleware::class,
         'backup' => \App\Http\Middleware\BackupFileMiddleware::class,
+        'logOperations' => LogOperations::class,
     ];
 }

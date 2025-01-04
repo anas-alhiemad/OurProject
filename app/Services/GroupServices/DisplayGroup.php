@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\GroupServices;
 
 use App\Models\User;
@@ -10,6 +11,7 @@ class DisplayGroup
 {
     protected $groupRepository;
     protected $userRepository;
+
     public function __construct(GroupRepository $groupRepository,UserRepository $userRepository)
     {
         $this->groupRepository = $groupRepository;
@@ -29,12 +31,19 @@ class DisplayGroup
     {
         $usersInGroup =$this->groupRepository->usersInGroup($groupId);
 
+    }
+
+    public function filesGroup($group)
+    {
+        $files = $group->files;
+        return $files;
+    }
         return response()->json(["usersInGroup"=>$usersInGroup->original]);
     }
 
     public function usersNotInGroup($groupId)
     {
-        $usersNotInGroup = $this-> userRepository->usersNotInGroup($groupId);
+        $usersNotInGroup = $this->userRepository->usersNotInGroup($groupId);
         return response()->json(["usersNotInGroup"=>$usersNotInGroup]);
     }
 }
