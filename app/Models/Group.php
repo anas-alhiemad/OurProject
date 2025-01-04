@@ -20,6 +20,11 @@ class Group extends Model
     {
         return $this->hasMany(UserGroup::class, 'groupId');
     }
+
+    public function invitation(){
+        return $this->hasMany(Invitation::class,'groupId');
+    }
+    
     public function files()
     {
         return $this->hasMany(File::class);

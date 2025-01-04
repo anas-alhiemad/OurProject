@@ -35,10 +35,9 @@ class CreatingGroups{
             $groupCreated =$this->groupRepository->create($groupInfo);
             $this->relation($groupCreated->id);
           //  $this->sendNotification();
-                 return response()->json([
+            return response()->json([
                 "message" => "Group has been created successfuly ",
-                "group" => $groupCreated
-            ],200);
+                "group" => $groupCreated],200);
 
     }
  }

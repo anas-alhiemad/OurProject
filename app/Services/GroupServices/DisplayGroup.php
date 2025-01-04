@@ -2,39 +2,48 @@
 
 namespace App\Services\GroupServices;
 
+use App\Models\User;
+use App\Repositories\UserRepository;
 use App\Http\Resources\GroupResource;
 use App\Repositories\GroupRepository;
-use App\Models\User;
 
 class DisplayGroup
 {
     protected $groupRepository;
+    protected $userRepository;
 
-    public function __construct(GroupRepository $groupRepository)
+    public function __construct(GroupRepository $groupRepository,UserRepository $userRepository)
     {
         $this->groupRepository = $groupRepository;
+        $this->userRepository = $userRepository;
     }
 
 
     public function indexGroups()
     {
         $group = $this->groupRepository->getAll();
-        return GroupResource::collection($group);
+        return response()->json([
+            "message" => "all Groups ",
+            "groups" => $group]);
     }
 
-
-    public function usersNotInGroup($groupId)
+    public function usersInGroup($groupId)
     {
-        $usersNotInGroup = User::whereDoesntHave('userGroup', function ($query) use ($groupId) {
-            $query->where('userGroup.id', $groupId);
-        })->get();
+        $usersInGroup =$this->groupRepository->usersInGroup($groupId);
 
-        return response()->json($usersNotInGroup);
     }
 
     public function filesGroup($group)
     {
         $files = $group->files;
         return $files;
+    }
+        return response()->json(["usersInGroup"=>$usersInGroup->original]);
+    }
+
+    public function usersNotInGroup($groupId)
+    {
+        $usersNotInGroup = $this->userRepository->usersNotInGroup($groupId);
+        return response()->json(["usersNotInGroup"=>$usersNotInGroup]);
     }
 }
