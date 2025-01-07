@@ -29,4 +29,17 @@ class AdminController extends Controller
 
         return $this->adminFunctionService->changeStatus($userId);
     }
+
+    public function showTracing()
+    {
+        $logFilePath = storage_path('logs/logger.log');
+        if (!file_exists($logFilePath)) {
+            return response()->json(['error' => 'Log file not found.'], 404);
+        }
+        $logs = file_get_contents($logFilePath);
+
+        return response($logs, 200)->header('Content-Type', 'text/plain');
+    }
+
+
 }

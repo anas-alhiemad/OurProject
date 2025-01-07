@@ -5,24 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Http\Request;
+use App\Services\UserServices\UserDisplayService;
 
 class DisplayController extends Controller
 {
-    public function index()
+    protected $userDisplayService;
+
+    public function __construct(UserDisplayService $userDisplayService)
     {
-        $users = User::all();
-        return response()->json(["Message"=>"get all usere in system","InfoUsers"=>$users]);
+        $this->userDisplayService = $userDisplayService;
     }
 
-    public function showUser($groupId)
+    public function index()
     {
-        $users = UserGroup::get()->with('user');
-        return response()->json(["Message"=>"get all usere in group","InfoUsers"=>$users]);
+       return $this->userDisplayService->getAllUser();
+    }
+
+    public function SearchUser($query)
+    {
+        return $this->userDisplayService->SearchUser($query);
     }
   
-    // public function showUser($groupId)
-    // {
-    //     $users = UserGroup::get()->with('user');
-    //     return response()->json(["Message"=>"get all usere in group","InfoUsers"=>$users]);
-    // }
+
 }

@@ -12,5 +12,12 @@ class GroupUserRepository extends BaseRepository implements RepositoryInterface
         parent::__construct($model);
     }
 
+    public function getMyGroups()
+    {
+        $group = $this->model->where('UserId',auth()->guard('user')->id())->with('group')->get();
+        return response()->json([
+            "message" => "all MyGroups",
+            "groups" => $group]);
+    }
     
 }

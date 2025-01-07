@@ -33,6 +33,12 @@ class GroupsController extends Controller
         $groups = $this->displayGroupService->indexGroups();
          return  $groups;
     }
+    
+    public function showMyGroups()
+    {
+        $groups = $this->displayGroupService->showMyGroups();
+         return  $groups;
+    }
 
     public function usersNotInGroup($groupId)
     {
