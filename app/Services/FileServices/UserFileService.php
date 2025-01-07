@@ -57,6 +57,8 @@ class UserFileService extends BaseService
 
     public function update(UpdateFileRequest $request, File $file)
     {
+        if ($file == null)
+            return $this->customResponse('File not found.', null);
         DB::beginTransaction();
         try {
             if ($request->file('file') != null) {
@@ -76,7 +78,7 @@ class UserFileService extends BaseService
                 $file->file_path = '/uploads/' . $fileName;
             }
             $file->save();
-            $this->logOperation($file->id, 'update');
+            // $this->logOperation($file->id, 'update');
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -86,12 +88,15 @@ class UserFileService extends BaseService
     }
     public function destroy(File $file)
     {
+        if ($file == null)
+            return $this->customResponse('File not found.', null);
+
         DB::beginTransaction();
         // Delete the file from storage
         Storage::delete($file->file_path);
 
         // Delete the database record
-        $this->logOperation($file->id, 'delete');
+        // $this->logOperation($file->id, 'delete');
         $file->delete();
         DB::commit();
         return $this->customResponse('File deleted successfully.', null);
@@ -106,7 +111,7 @@ class UserFileService extends BaseService
                 if ($file && !$file->is_checked_in) {
                     $file->is_checked_in = true;
                     $file->save();
-                    $this->logOperation($file->id, 'check in');
+                    // $this->logOperation($file->id, 'check in');
                 } else {
                     throw new \Exception("File ID {$fileId} is already checked in or does not exist.");
                 }
@@ -128,7 +133,7 @@ class UserFileService extends BaseService
                 if ($file && $file->is_checked_in) {
                     $file->is_checked_in = false;
                     $file->save();
-                    $this->logOperation($file->id, 'check out');
+                    // $this->logOperation($file->id, 'check out');
                 } else {
                     throw new \Exception("File ID {$fileId} is already checked out or does not exist.");
                 }
