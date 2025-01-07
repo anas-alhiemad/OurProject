@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\GroupServices;
 
 use App\Models\User;
@@ -39,14 +40,18 @@ class DisplayGroup
 
     public function usersInGroup($groupId)
     {
-        $usersInGroup =$this->groupRepository->usersInGroup($groupId);
+        $usersInGroup = $this->groupRepository->usersInGroup($groupId);
+    }
 
-        return response()->json(["usersInGroup"=>$usersInGroup->original]);
+    public function filesGroup($group)
+    {
+        $files = $group->files;
+        return $files;
     }
 
     public function usersNotInGroup($groupId)
     {
-        $usersNotInGroup = $this-> userRepository->usersNotInGroup($groupId);
-        return response()->json(["usersNotInGroup"=>$usersNotInGroup]);
+        $usersNotInGroup = $this->userRepository->usersNotInGroup($groupId);
+        return response()->json(["usersNotInGroup" => $usersNotInGroup]);
     }
 }
