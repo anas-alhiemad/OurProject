@@ -52,6 +52,15 @@ class UserRepository extends BaseRepository implements RepositoryInterface
         return $verified;
     }
 
+    function getUserSearch($query)
+    {
+        $user = $this->model
+                     ->where('name', 'LIKE', "%{$query}%")
+                     ->orWhere('email', 'LIKE', "%{$query}%")
+                     ->orWhere('userName', 'LIKE', "%{$query}%")->get();
+        return $user;
+    }
+
 
     function accountStatus($userId)  
     {

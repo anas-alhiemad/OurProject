@@ -39,6 +39,7 @@ Route::group([
 ], function () {
     Route::post('/changeStatus/{userId}', [AdminController::class, 'changeStatus'])->middleware('auth:admin', 'transaction');
     Route::get('/showUserPending', [AdminController::class, 'showUserPending'])->middleware('auth:admin');
+    Route::get('/Showlogs', [AdminController::class, 'showTracing']);
 });
 
     Route::group([
@@ -49,6 +50,7 @@ Route::group([
         Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user','transaction');
         Route::post('/deleteGroup/{id}', [GroupsController::class, 'deleteGroup'])->middleware('auth:user','transaction');
         Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
+        Route::get('/showMyGroup', [GroupsController::class, 'showMyGroups'])->middleware('checkUserType:admin,user');
         Route::get('/files/{group}', [GroupsController::class, 'filesGroup'])->middleware('checkUserType:admin,user');
         Route::get('/usersNotInGroup/{groupId}', [GroupsController::class, 'usersNotInGroup']);
         Route::get('/usersInGroup/{groupId}', [GroupsController::class, 'usersInGroup']);
@@ -73,9 +75,11 @@ Route::group([
 
 
 Route::group([
-    'prefix' => 'display'
+    'prefix' => 'display',
+    'middleware' => 'auth:user,admin'
 ], function () {
     Route::get('/show', [DisplayController::class, 'index']);
+    Route::get('/searchUser/{query}', [DisplayController::class, 'SearchUser'])->middleware('TracingMiddleware');
 });
 
 
