@@ -31,6 +31,8 @@ class DisplayGroup
     public function usersInGroup($groupId)
     {
         $usersInGroup = $this->groupRepository->usersInGroup($groupId);
+
+        return response()->json(["usersInGroup" => $usersInGroup->original]);
     }
 
     public function filesGroup($group)

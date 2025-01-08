@@ -10,6 +10,7 @@ use App\Models\File;
 use App\Models\FileOperation;
 use App\Models\Group;
 use App\Models\User;
+use App\Observers\LogObserver;
 use App\Services\BaseService;
 use Validator;
 use Illuminate\Http\Request;
@@ -43,8 +44,9 @@ class UserFileService extends BaseService
         // $newFile->file_path = '/uploads/' . $fileName;
         $newFile->file_path =  $filePath;
         $newFile->group_id = $request->input('group_id');
+        // $newFile->notify(new LogObserver($newFile->id));
         $newFile->save();
-        $this->logOperation($newFile->id, 'upload');
+        // $this->logOperation($newFile->id, 'upload');
         DB::commit();
         return $this->customResponse('File uploaded successfully.', $newFile);
     }
@@ -63,14 +65,14 @@ class UserFileService extends BaseService
         try {
             if ($request->file('file') != null) {
                 $fileUpload = $request->file('file');
-                $fileName = $fileUpload->getClientOriginalName();
+                $fileName = time() . '-' .  $fileUpload->getClientOriginalName();
+                $file->storeAs('uploads', $fileName, 'public');
+                // $disk = Storage::build([
+                //     'driver' => 'local',
+                //     'root' =>   '/uploads',
+                // ]);
 
-                $disk = Storage::build([
-                    'driver' => 'local',
-                    'root' =>   '/uploads',
-                ]);
-
-                $disk->put($fileName, file_get_contents($fileUpload->path()));
+                // $disk->put($fileName, file_get_contents($fileUpload->path()));
 
                 $file = File::find($file->id);
                 Storage::delete($file->file_path);

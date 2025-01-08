@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Jobs\CompareFilesJob;
 use App\Models\File;
 use Closure;
 use Illuminate\Http\Request;
@@ -25,7 +26,9 @@ class BackupFileMiddleware
             $backupPath = 'backup/' . $backupFileName;
 
             if (Storage::disk('public')->exists($filePath)) {
+
                 Storage::disk('public')->copy($filePath, $backupPath);
+                // }
             }
 
             // $backupPath = 'public/backups/' . 'backup_' . $file->name;
@@ -44,3 +47,22 @@ class BackupFileMiddleware
         }
     }
 }
+
+
+
+
+                // $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+
+                // $fileExtension = strtolower($fileExtension);
+                // $backupfileExtension = pathinfo($backupPath, PATHINFO_EXTENSION);
+
+                // $backupfileExtension = strtolower($backupfileExtension);
+
+                // if (($fileExtension == 'xlsx' || $fileExtension == 'xls') && ($backupfileExtension == 'docx' || $backupfileExtension == 'doc')
+                //     || ($fileExtension == 'docx' || $fileExtension == 'doc') && ($backupfileExtension == 'xlsx' || $backupfileExtension == 'xls')
+                // ) {
+
+                    // $oldpath = public_path($filePath);
+                    // $newpath = public_path($filePath);
+
+                    // CompareFilesJob::dispatch($oldpath, $newpath);
