@@ -73,6 +73,5 @@ class Kernel extends HttpKernel
         'backup' => \App\Http\Middleware\BackupFileMiddleware::class,
         'TracingMiddleware' => \App\Http\Middleware\TracingMiddleware::class,
         'logOperations' => LogOperations::class,
-
     ];
 }

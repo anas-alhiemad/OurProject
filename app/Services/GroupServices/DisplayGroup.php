@@ -12,11 +12,9 @@ class DisplayGroup
 {
     protected $groupRepository;
     protected $userRepository;
-
     protected $groupUserRepository;
 
     public function __construct(GroupRepository $groupRepository,UserRepository $userRepository,GroupUserRepository $groupUserRepository)
-
     {
         $this->groupRepository = $groupRepository;
         $this->userRepository = $userRepository;
@@ -29,8 +27,7 @@ class DisplayGroup
         $group = $this->groupUserRepository->getAll();
         return response()->json([
             "message" => "all Groups ",
-            "groups" => $group
-        ]);
+            "groups" => $group]);
     }
 
 
@@ -44,6 +41,7 @@ class DisplayGroup
     public function usersInGroup($groupId)
     {
         $usersInGroup = $this->groupRepository->usersInGroup($groupId);
+        return $usersInGroup; 
     }
 
     public function filesGroup($group)
