@@ -12,6 +12,12 @@ class InvitationRepository extends BaseRepository implements RepositoryInterface
         parent::__construct($model);
     }
 
+    public function getallinvitedUser()
+    {
+        $invitation = $this->model->with('invitedUser','group')->get();
+        return $invitation;
+    }
+
     public function getInvitationPending($invitationId)
     {
         $invitation = Invitation::whereId($invitationId)
@@ -41,7 +47,7 @@ class InvitationRepository extends BaseRepository implements RepositoryInterface
     public function groupSpecificInvitation($groupId)
     { 
         $allInvitations = $this->model::where('groupId',$groupId)
-                                    ->whereStatus('pending')->get();
+                                    ->whereStatus('pending')->with('invitedUser')->get();
         return $allInvitations;
     }
 
