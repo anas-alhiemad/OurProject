@@ -41,6 +41,7 @@ class DisplayGroup
     public function usersInGroup($groupId)
     {
         $usersInGroup = $this->groupRepository->usersInGroup($groupId);
+
         return $usersInGroup; 
     }
 
