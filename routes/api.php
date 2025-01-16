@@ -39,43 +39,45 @@ Route::group([
 ], function () {
     Route::post('/changeStatus/{userId}', [AdminController::class, 'changeStatus'])->middleware('auth:admin', 'transaction');
     Route::get('/showUserPending', [AdminController::class, 'showUserPending'])->middleware('auth:admin');
+    Route::get('/Showlogs', [AdminController::class, 'showTracing']);
 });
 
     Route::group([
         'prefix' => 'user/group',
-        'middleware' => 'auth:user,admin'
         ],function(){
         Route::post('/createGroup', [GroupsController::class, 'createGroup'])->middleware('auth:user','transaction');
         Route::post('/updateGroup/{id}', [GroupsController::class, 'updateGroup'])->middleware('auth:user','transaction');
         Route::post('/deleteGroup/{id}', [GroupsController::class, 'deleteGroup'])->middleware('auth:user','transaction');
-        Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('checkUserType:admin,user');
+        Route::get('/showGroup', [GroupsController::class, 'showGroup'])->middleware('auth:admin');
+        Route::get('/showMyGroup', [GroupsController::class, 'showMyGroups'])->middleware('auth:user');
         Route::get('/files/{group}', [GroupsController::class, 'filesGroup'])->middleware('checkUserType:admin,user');
-        Route::get('/usersNotInGroup/{groupId}', [GroupsController::class, 'usersNotInGroup']);
-        Route::get('/usersInGroup/{groupId}', [GroupsController::class, 'usersInGroup']);
+        Route::get('/usersNotInGroup/{groupId}', [GroupsController::class, 'usersNotInGroup'])->middleware('auth:user');
+        Route::get('/usersInGroup/{groupId}', [GroupsController::class, 'usersInGroup'])->middleware('auth:user');
         });
 
 
 
     Route::group([
         'prefix' => 'user/invitation',
-        'middleware' => 'auth:user,admin'
         ],function(){
-        Route::post('/sendinvitation/{userInvitedId}/{GroupId}', [InvitationController::class, 'sendInvitation'])->middleware('transaction');
-        Route::post('/cancelinvitation/{InvitationId}', [InvitationController::class, 'cancelInvitation'])->middleware('transaction');    
-        Route::get('/indexinvitation', [InvitationController::class, 'indexInvitation']);    
-        Route::get('/invitationuserSpecific', [InvitationController::class, 'invitationUserSpecific']);    
-        Route::get('/invitationgroupSpecific/{groupId}', [InvitationController::class, 'invitationGroupSpecific']);    
-        Route::post('/acceptInvitation/{InvitationId}', [InvitationController::class, 'acceptInvitation'])->middleware('transaction');    
-        Route::post('/declineInvitation/{InvitationId}', [InvitationController::class, 'declineInvitation'])->middleware('transaction');    
+        Route::post('/sendinvitation/{userInvitedId}/{GroupId}', [InvitationController::class, 'sendInvitation'])->middleware('transaction','auth:user');
+        Route::post('/cancelinvitation/{InvitationId}', [InvitationController::class, 'cancelInvitation'])->middleware('transaction','auth:user');    
+        Route::get('/indexinvitation', [InvitationController::class, 'indexInvitation'])->middleware('auth:admin');    
+        Route::get('/invitationuserSpecific', [InvitationController::class, 'invitationUserSpecific'])->middleware('auth:user');    
+        Route::get('/invitationgroupSpecific/{groupId}', [InvitationController::class, 'invitationGroupSpecific'])->middleware('auth:user');    
+        Route::post('/acceptInvitation/{InvitationId}', [InvitationController::class, 'acceptInvitation'])->middleware('transaction','auth:user');    
+        Route::post('/declineInvitation/{InvitationId}', [InvitationController::class, 'declineInvitation'])->middleware('transaction','auth:user');    
         });
 
 
 
 
 Route::group([
-    'prefix' => 'display'
+    'prefix' => 'display',
+    'middleware' => 'auth:user,admin'
 ], function () {
     Route::get('/show', [DisplayController::class, 'index']);
+    Route::get('/searchUser/{query}', [DisplayController::class, 'SearchUser'])->middleware('TracingMiddleware');
 });
 
 

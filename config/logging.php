@@ -63,6 +63,14 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'http'=>[
+            'driver'=>'single',
+            'path' =>storage_path('logs/logger.log'),
+            'level'=>'info',
+            'locking'=>true,
+            'formatter' => \Monolog\Formatter\JsonFormatter::class,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

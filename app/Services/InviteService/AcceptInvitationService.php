@@ -20,7 +20,7 @@ class AcceptInvitationService
     {
         $invitation = $this->invitationRepository->changeInvitationStatus($invitationId,'approved');
 
-       $userGroupInfo =['groupId' =>$invitation->groupId,'userId'=>auth()->guard('user')->id(),'isOwner'=>false];
+       $userGroupInfo =['groupId' =>$invitation->groupId,'userId'=>$invitation->invitedUserId,'isOwner'=>false];
        $this->groupUserRepository->create($userGroupInfo);
 
 

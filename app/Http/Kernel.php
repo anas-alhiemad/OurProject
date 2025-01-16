@@ -71,6 +71,7 @@ class Kernel extends HttpKernel
         'userInGroup' =>    \App\Http\Middleware\UserInGroup::class,
         'attempts' => \App\Http\Middleware\LoginAttemptsMiddleware::class,
         'backup' => \App\Http\Middleware\BackupFileMiddleware::class,
+        'TracingMiddleware' => \App\Http\Middleware\TracingMiddleware::class,
         'logOperations' => LogOperations::class,
     ];
 }

@@ -42,6 +42,12 @@ class GroupsController extends Controller
         $files = $this->displayGroupService->filesGroup($group);
         return  $this->customResponse("Files of group", $files);
     }
+    
+    public function showMyGroups()
+    {
+        $groups = $this->displayGroupService->showMyGroups();
+         return  $groups;
+    }
 
     public function usersNotInGroup($groupId)
     {
