@@ -19,11 +19,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 use Maatwebsite\Excel\Facades\Excel;
+use Smalot\PdfParser\Parser;
 
 class UserFileService extends BaseService
 {
     public function upload(CreateFileRequest $request)
     {
+        // $file1 = $request->file('file1');s
+        // $file2 = $request->file('file2');
+        // $isIdentical = $this->compare($file1, $file2);
+        // return response()->json(['isIdentical' => $isIdentical]);
         DB::beginTransaction();
 
         $file = $request->file('file');
@@ -59,27 +64,31 @@ class UserFileService extends BaseService
 
     public function update(UpdateFileRequest $request, File $file)
     {
-        if ($file == null)
-            return $this->customResponse('File not found.', null);
         DB::beginTransaction();
         try {
-            if ($request->file('file') != null) {
-                $fileUpload = $request->file('file');
-                $fileName = time() . '-' .  $fileUpload->getClientOriginalName();
-                $file->storeAs('uploads', $fileName, 'public');
-                // $disk = Storage::build([
-                //     'driver' => 'local',
-                //     'root' =>   '/uploads',
-                // ]);
+            // if ($request->file('file') != null) {
+            // $file = File::find($file->id);
+            // Storage::delete($file->file_path);
 
-                // $disk->put($fileName, file_get_contents($fileUpload->path()));
+            $fileUpload = $request->file('file');
+            $fileName = time() . '-' .  $fileUpload->getClientOriginalName();
+            $file_path = $fileUpload->storeAs('uploads', $fileName, 'public');
+            // $disk = Storage::build([
+            //     'driver' => 'local',
+            //     'root' =>   '/uploads',
+            // ]);
 
-                $file = File::find($file->id);
-                Storage::delete($file->file_path);
-                $file->name = $request->input('name');
-                $file->file_path = '/uploads/' . $fileName;
-            }
-            $file->save();
+            // $disk->put($fileName, file_get_contents($fileUpload->path()));
+
+            // $file->name = $request->input('name');
+            // $file->file_path = '/uploads/' . $fileName;
+            // // }
+            // $file->save();
+
+            $file->update([
+                "name" => $request->input('name'),
+                "file_path" => $file_path
+            ]);
             // $this->logOperation($file->id, 'update');
             DB::commit();
         } catch (\Exception $e) {
@@ -157,5 +166,16 @@ class UserFileService extends BaseService
     private function logOperation($fileId, $operation)
     {
         FileOperation::create(['file_id' => $fileId, 'operation' => $operation, 'user_id' => auth()->user()->id]);
+    }
+
+    public function compare($file1, $file2)
+    {
+        $parser = new Parser();
+        $pdf1 = $parser->parseFile($file1);
+        $pdf2 = $parser->parseFile($file2);
+        // Implement your comparison logic here // For example, you can compare the text content of both PDFs
+        $text1 = $pdf1->getText();
+        $text2 = $pdf2->getText();
+        return strcmp($text1, $text2) === 0;
     }
 }
