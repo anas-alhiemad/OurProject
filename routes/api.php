@@ -77,7 +77,7 @@ Route::group([
     'middleware' => 'auth:user,admin'
 ], function () {
     Route::get('/show', [DisplayController::class, 'index']);
-    Route::get('/showRecords/{userId}/{groupId}', [DisplayController::class, 'showRecords']);
+    Route::get('/showUserRecords/{userId}/{groupId}', [DisplayController::class, 'showUserRecords']);
     Route::get('/searchUser/{query}', [DisplayController::class, 'SearchUser'])->middleware('TracingMiddleware');
 });
 
@@ -95,6 +95,7 @@ Route::group([
     'prefix' => 'files'
 ], function () {
     Route::get('/get', [FileController::class, 'get']);
+    Route::get('/showFileRecords/{fileId}/{groupId}', [FileController::class, 'showFileRecords']);
     Route::post('/upload', [FileController::class, 'upload']);
     Route::post('/update/{file}', [FileController::class, 'update'])->middleware('backup');
     Route::delete('/delete/{file}', [FileController::class, 'destroy'])->middleware('backup');

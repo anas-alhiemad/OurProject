@@ -2,6 +2,8 @@
 namespace App\Services\UserServices;
 
 use App\Repositories\UserRepository;
+use App\Repositories\GroupRepository;
+use App\Repositories\GroupUserRepository;
 use App\Repositories\FileOperationRepository;
 
 
@@ -9,11 +11,21 @@ class UserDisplayService
 {
     protected $userRepository;
     protected $userOperationRepository;
-    
-    public function __construct(UserRepository  $userRepository,FileOperationRepository $userOperationRepository)
+    protected $groupRepository;
+  
+
+    public function __construct(UserRepository  $userRepository,FileOperationRepository $userOperationRepository,GroupRepository $groupRepository)
     {
         $this->userRepository = $userRepository;
         $this->userOperationRepository = $userOperationRepository;
+        $this->groupRepository = $groupRepository;
+    }
+
+    public function isOwner($user,$group)
+    { 
+        if ($user->can('create', $group)) 
+                    return true;
+        return false;            
     }
 
     public function getAllUser()
@@ -25,12 +37,21 @@ class UserDisplayService
     }
 
 
-    public function showUserOperation($userId)
+    public function showUserOperation($userId,$groupId)
     {
-        $historyOperation = $this->userOperationRepository->getAllById($userId);
+        $group = $this->groupRepository->getById($groupId);
+           
+        $user =  $this->userRepository->getById(auth()->guard('user')->id()); 
+      
+        $owner = $this->isOwner($user,$group); 
+        if ($owner) {
+        $historyOperation = $this->userOperationRepository->getAllById($userId,$groupId);
         return response()->json([
-            "message" => "all Operation for User  in system",
+            "message" => "all Operation for User  in Group",
             "data" => $historyOperation]);
+        }
+             return response()->json(['Message' => 'You do not have the authority to Do this.'], 422);   
+     
     }
 
 

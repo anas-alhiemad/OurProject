@@ -10,9 +10,13 @@ class FileOperationRepository extends BaseRepository implements RepositoryInterf
     {
         parent::__construct($model);
     }
-    public function getAllById($id)
+    public function getAllById($userId,$groupId)
     {
-        return $this->model->whereId($id)->with('file')->get();
+        return $this->model
+        ->where('user_id', $userId)
+        ->where('group_id', $groupId) 
+        ->with('file') 
+        ->get();
     }
 
 }

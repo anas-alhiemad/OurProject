@@ -21,7 +21,7 @@ class LogOperations
         if ($operation == "delete" || $operation == "update") {
             $fileId = $request->route()->parameters()["file"]->id;
             $groupId = $request->route()->parameters()["file"]->group_id;
-            FileOperation::create(['file_id' => $fileId, 'operation' => $operation, 'group_id' => $groupId,'user_id' => auth()->user()->id]);
+            FileOperation::create(['file_id' => $fileId, 'operation' => $operation, 'group_id' => $groupId,'user_id' => auth()->user()->id, 'dateOperation' => now()]);
         } else if ($operation == "get") {
         } else {
             $files = $request->input('file_ids', []);
@@ -35,7 +35,8 @@ class LogOperations
                             'file_id' => $file,
                             'operation' => $operation,
                             'group_id' => $groupId,
-                            'user_id' => auth()->user()->id,]);
+                            'user_id' => auth()->user()->id,
+                            'dateOperation' => now()]);
                     }
                 }       
             }

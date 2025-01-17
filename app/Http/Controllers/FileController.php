@@ -65,4 +65,9 @@ class FileController extends Controller
     {
         return $this->fileService->exportOperations($file);
     }
+
+    public function showFileRecords($fileId,$groupId)
+    {
+        return $this->fileService->showFileOperation($fileId,$groupId);
+    }
 }
