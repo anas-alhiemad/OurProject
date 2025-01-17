@@ -178,4 +178,16 @@ class UserFileService extends BaseService
         $text2 = $pdf2->getText();
         return strcmp($text1, $text2) === 0;
     }
+
+
+    public function showFileOperation($fileId,$groupId)
+    {
+        $historyOperation =FileOperation::where('file_id', $fileId)->where('group_id', $groupId) 
+        ->with('user')->with('user') 
+        ->get();
+        return response()->json([
+            "message" => "all Operation on File  in Group",
+            "data" => $historyOperation]);
+            
+    }
 }
