@@ -45,4 +45,16 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return response()->json([
+                'meessage' => 'Model not found,ID is invalid',
+                'data' => null
+            ], 404);
+        }
+
+        return parent::render($request, $exception);
+    }
 }
