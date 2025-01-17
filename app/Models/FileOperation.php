@@ -9,7 +9,7 @@ class FileOperation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['file_id', 'operation', 'user_id'];
+    protected $fillable = ['file_id', 'operation', 'user_id','group_id'];
 
     public function file()
     {
