@@ -77,6 +77,7 @@ Route::group([
     'middleware' => 'auth:user,admin'
 ], function () {
     Route::get('/show', [DisplayController::class, 'index']);
+    Route::get('/showRecords/{userId}/{groupId}', [DisplayController::class, 'showRecords']);
     Route::get('/searchUser/{query}', [DisplayController::class, 'SearchUser'])->middleware('TracingMiddleware');
 });
 

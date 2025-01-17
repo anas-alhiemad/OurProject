@@ -24,7 +24,7 @@ class DisplayGroup
 
     public function indexGroups()
     {
-        $group = $this->groupUserRepository->getAll();
+        $group = $this->groupRepository->getAll();
         return response()->json([
             "message" => "all Groups ",
             "groups" => $group]);

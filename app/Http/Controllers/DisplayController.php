@@ -25,6 +25,11 @@ class DisplayController extends Controller
     {
         return $this->userDisplayService->SearchUser($query);
     }
+
+    public function showRecords($userId,$groupID)
+    {
+        return $this->userDisplayService->showUserOperation($userId,$groupID);
+    }
   
 
 }

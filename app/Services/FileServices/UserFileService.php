@@ -44,7 +44,7 @@ class UserFileService extends BaseService
         $newFile->file_path =  $filePath;
         $newFile->group_id = $request->input('group_id');
         $newFile->save();
-        $this->logOperation($newFile->id, 'upload');
+       // $this->logOperation($newFile->id, 'upload');
         DB::commit();
         return $this->customResponse('File uploaded successfully.', $newFile);
     }
